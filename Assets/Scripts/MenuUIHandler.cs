@@ -125,6 +125,6 @@ public class MenuUIHandler : MonoBehaviour
         playerName = "";
         bestPlayerNameAndScore = "";
         PlayerPrefs.DeleteAll();
-        //bestScoreText.text = "Record Deleted";
+        bestScoreText.text = "Record Deleted";
     }
 }
