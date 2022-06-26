@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class MainManager : MonoBehaviour
 {
@@ -11,13 +12,18 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    //public Text MainBestText;
+
     public GameObject GameOverText;
-    
+
+    public Text displayPlayerName;
+
     private bool m_Started = false;
     private int m_Points;
     
     private bool m_GameOver = false;
 
+    private int m_BestScore;
     
     // Start is called before the first frame update
     void Start()
@@ -36,6 +42,8 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+        MenuUIHandler.Instance.FindGameManager();
+        displayPlayerName.text = BestScoreText();
     }
 
     private void Update()
@@ -72,5 +80,40 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+
+        MenuUIHandler.Instance.LoadName();
+        SaveBestScore();
+        displayPlayerName.text = BestScoreText();
+    }
+
+    public void SaveBestScore()
+    {
+        if (m_Points > LoadBestScore())
+        {
+            m_BestScore = m_Points;
+            PlayerPrefs.SetInt("best score", m_BestScore);
+            PlayerPrefs.SetString("best name", MenuUIHandler.Instance.playerName);
+        }
+    }
+
+    public int LoadBestScore()
+    {
+        return PlayerPrefs.GetInt("best score");
+    }
+
+    public string LoadBestScoreName()
+    {
+        return PlayerPrefs.GetString("best name");
+    }
+
+    public string BestScoreText()
+    {
+        string bestScoreText = "Score : " + LoadBestScoreName() + " : " + LoadBestScore();
+        return bestScoreText;
+    }
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 }
